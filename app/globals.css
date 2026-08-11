@@ -1,26 +1,122 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: 40 20% 97%;
+    --foreground: 0 0% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 10%;
+
+    --primary: 38 46% 56%;
+    --primary-foreground: 0 0% 10%;
+
+    --secondary: 38 25% 93%;
+    --secondary-foreground: 0 0% 10%;
+
+    --muted: 38 20% 94%;
+    --muted-foreground: 0 0% 45%;
+
+    --accent: 38 46% 56%;
+    --accent-foreground: 0 0% 10%;
+
+    --destructive: 0 72% 45%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 38 15% 88%;
+    --input: 38 15% 86%;
+    --ring: 38 46% 56%;
+
+    --radius: 1rem;
+
+    --font-heading: "Tenor Sans", ui-serif, Georgia, serif;
+    --font-body: "Public Sans", ui-sans-serif, system-ui, sans-serif;
+    --font-display: "Tenor Sans", ui-serif, Georgia, serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+    font-size: 1.0625rem;
+    line-height: 1.65;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-heading;
+    color: #1a1a1a;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+}
+
+@layer components {
+  .eyebrow {
+    @apply text-[0.72rem] font-bold uppercase tracking-[0.22em] text-gold;
+  }
+
+  .glass {
+    background: rgba(255, 255, 255, 0.62);
+    backdrop-filter: blur(28px) saturate(140%);
+    border: 1px solid rgba(197, 160, 89, 0.3);
+  }
+
+  .glass-dark {
+    background: rgba(26, 26, 26, 0.55);
+    backdrop-filter: blur(24px) saturate(140%);
+    border: 1px solid rgba(197, 160, 89, 0.35);
+  }
+
+  .monolith {
+    @apply bg-white rounded-2xl transition-all duration-500;
+    border: 1px solid rgba(197, 160, 89, 0.22);
+    box-shadow:
+      0 1px 2px rgba(26, 26, 26, 0.03),
+      0 18px 40px -28px rgba(26, 26, 26, 0.18);
+  }
+
+  .monolith:hover {
+    border-color: rgba(197, 160, 89, 0.6);
+    box-shadow:
+      0 2px 4px rgba(26, 26, 26, 0.04),
+      0 28px 60px -30px rgba(26, 26, 26, 0.26);
+    transform: translateY(-4px);
+  }
+
+  .gold-path {
+    position: relative;
+  }
+
+  .gold-path::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -4px;
+    height: 1px;
+    width: 0;
+    background: #c5a059;
+    transform: translateX(-50%);
+    transition: width 0.5s ease;
+  }
+
+  .gold-path:hover::after {
+    width: 100%;
+  }
+}
+
+::selection {
+  background: rgba(197, 160, 89, 0.28);
 }
