@@ -10,38 +10,75 @@ import MegaMenu from "@/components/nav/MegaMenu";
 import GoldButton from "@/components/common/GoldButton";
 import Logo from "@/components/common/Logo";
 import WhatsAppIcon from "@/components/common/WhatsAppIcon";
-import { SETUPS, ADDITIONAL_SERVICES } from "@/lib/siteData";
+import { useSvg } from "@/hooks/useSvg";
+import type { ThemeSettings } from "@/lib/wordpress/themeSettings";
 
-type MenuItem = { to: string; title: string; desc: string; icon?: string };
-type Menu = { label: string; path: string; intro?: string; items: MenuItem[] };
-
-const MENUS: Record<string, Menu> = {
-  "business-setup": {
-    label: "Business Setup",
-    path: "/business-setup",
-    intro: "Choose the right jurisdiction for your company.",
-    items: SETUPS.map((s) => ({
-      to: `/business-setup/${s.slug}`,
-      title: s.title,
-      desc: `${s.lead.slice(0, 62)}…`,
-      icon: "Building2",
-    })),
-  },
-
-  "corporate-services": {
-    label: "Corporate Services",
-    path: "/additional-services",
-    intro: "Residency, banking, tax and compliance support.",
-    items: ADDITIONAL_SERVICES.slice(0, 6).map((s) => ({
-      to: `/additional-services#${s.slug}`,
-      title: s.title,
-      desc: `${s.desc.slice(0, 62)}…`,
-      icon: s.icon,
-    })),
-  },
+type MenuItem = {
+  id: string;
+  to: string;
+  title: string;
+  desc: string;
+  icon?: string;
 };
 
-export default function Navbar() {
+type Menu = {
+  id: string;
+  label: string;
+  path: string;
+  intro?: string;
+  items: MenuItem[];
+};
+
+type NavbarProps = {
+  menus: Record<string, Menu>;
+  themeSettings?: ThemeSettings;
+};
+
+function NavbarIcon({
+  src,
+  fallback,
+}: {
+  src?: string | null;
+  fallback: React.ReactNode;
+}) {
+  const { svg, isSvg } = useSvg(src);
+
+  if (isSvg && svg) {
+    return (
+      <span
+        className="
+          flex
+          h-5
+          w-5
+          items-center
+          justify-center
+          [&>svg]:h-5
+          [&>svg]:w-5
+          [&>svg]:max-h-5
+          [&>svg]:max-w-5
+        "
+        dangerouslySetInnerHTML={{
+          __html: svg,
+        }}
+      />
+    );
+  }
+
+  if (src) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={src}
+        alt=""
+        className="h-5 w-5 object-contain"
+      />
+    );
+  }
+
+  return <>{fallback}</>;
+}
+
+export default function Navbar({ menus, themeSettings }: NavbarProps) {
   const [open, setOpen] = useState<string | null>(null);
   const [mobile, setMobile] = useState<boolean>(false);
   const [scrolled, setScrolled] = useState(false);
@@ -78,6 +115,8 @@ export default function Navbar() {
     ? "border-white/40 text-white hover:border-white hover:bg-white/10"
     : "border-gold/30 text-charcoal hover:border-gold hover:bg-gold/10 hover:text-gold-deep";
 
+  const activeMenu = open ? menus[open] : null;
+
   return (
     <header
       className="fixed top-0 left-0 right-0 z-50"
@@ -91,93 +130,125 @@ export default function Navbar() {
         } border-x-0 border-t-0`}
       >
         <div className="mx-auto flex h-[74px] max-w-7xl items-center justify-between px-6 lg:px-10">
-          <Logo className="h-9" light={transparent} />
+          {themeSettings?.logoUrl && (
+            <Logo className="h-9" light={transparent} src={themeSettings.logoUrl} />
+          )}
 
           {/* Desktop navigation */}
           <nav className="hidden items-center flex-nowrap gap-3 whitespace-nowrap lg:flex xl:gap-4">
-            {Object.entries(MENUS).map(([key, menu]) => (
-              <button
-                key={key}
-                type="button"
-                onMouseEnter={() => setOpen(key)}
-                onClick={() =>
-                  setOpen(open === key ? null : key)
-                }
-                className={`flex items-center gap-1 text-[0.66rem] uppercase tracking-[0.08em] transition-colors ${
-                  open === key ? "text-gold-deep" : linkColor
-                }`}
-              >
-                {menu.label}
+            {Object.entries(menus).map(([key, menu]) => {
+              const hasChildren = menu.items.length > 0;
 
-                <ChevronDown
-                  className={`h-3 w-3 transition-transform ${
-                    open === key ? "rotate-180" : ""
+              // Regular menu item without children
+              if (!hasChildren) {
+                return (
+                  <Link
+                    key={key}
+                    href={menu.path}
+                    className={`gold-path text-[0.66rem] uppercase tracking-[0.08em] transition-colors ${linkColor}`}
+                  >
+                    {menu.label}
+                  </Link>
+                );
+              }
+
+              // Dropdown menu item
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  onMouseEnter={() => setOpen(key)}
+                  onClick={() =>
+                    setOpen(open === key ? null : key)
+                  }
+                  className={`flex items-center gap-1 text-[0.66rem] uppercase tracking-[0.08em] transition-colors ${
+                    open === key
+                      ? "text-gold-deep"
+                      : linkColor
                   }`}
-                  strokeWidth={1.6}
-                />
-              </button>
-            ))}
+                >
+                  {menu.label}
 
-            {[
-              ["About", "/about"],
-              ["Blog", "/media"],
-              ["Contact", "/contact"],
-            ].map(([label, href]) => (
-              <Link
-                key={href}
-                href={href}
-                className={`gold-path text-[0.66rem] uppercase tracking-[0.08em] transition-colors ${linkColor}`}
-              >
-                {label}
-              </Link>
-            ))}
+                  <ChevronDown
+                    className={`h-3 w-3 transition-transform ${
+                      open === key ? "rotate-180" : ""
+                    }`}
+                    strokeWidth={1.6}
+                  />
+                </button>
+              );
+            })}
           </nav>
 
           {/* Desktop actions */}
           <div className="hidden items-center gap-1.5 lg:flex">
-            <GoldButton
-              to="/estimate"
-              className="h-12 whitespace-nowrap px-4 text-[0.66rem]"
-            >
-              Cost Calculator
-            </GoldButton>
+            {themeSettings?.headerCta?.url && (
+              <GoldButton
+                to={themeSettings.headerCta.url}
+                target={themeSettings.headerCta.target || undefined}
+                className="h-12 whitespace-nowrap px-4 text-[0.66rem]"
+              >
+                {themeSettings.headerCta.title || "Cost Calculator"}
+              </GoldButton>
+            )}
 
-            <a
-              href="tel:+971524940085"
-              title="+971 52 494 0085"
-              className={`flex h-12 w-12 items-center justify-center rounded-full border transition-all ${iconBtn}`}
-            >
-              <Phone
-                className="h-4 w-4"
-                strokeWidth={1.6}
-              />
-            </a>
+            {themeSettings?.phoneNumber && (
+              <a
+                href={`tel:${themeSettings.phoneNumber}`}
+                title={themeSettings.phoneNumber}
+                className={`flex h-12 w-12 items-center justify-center rounded-full border transition-all ${iconBtn}`}
+              >
+                <NavbarIcon
+                  src={themeSettings.phoneIcon?.sourceUrl}
+                  fallback={<Phone className="h-4 w-4" strokeWidth={1.6} />}
+                />
+              </a>
+            )}
 
-            <a
-              href="https://api.whatsapp.com/send?phone=971524940085"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="WhatsApp"
-              className={`flex h-12 w-12 items-center justify-center rounded-full border transition-all ${iconBtn}`}
-            >
-              <WhatsAppIcon className="h-3.5 w-3.5" />
-            </a>
+            {themeSettings?.whatsappNumber && (
+              <a
+                href={
+                  themeSettings.whatsappNumber.startsWith("http")
+                    ? themeSettings.whatsappNumber
+                    : `https://wa.me/${themeSettings.whatsappNumber.replace(/[^0-9]/g, "")}`
+                }
+                target="_blank"
+                rel="noopener noreferrer"
+                title="WhatsApp"
+                className={`flex h-12 w-12 items-center justify-center rounded-full border transition-all ${iconBtn}`}
+              >
+                <NavbarIcon
+                  src={themeSettings.whatsappIcon?.sourceUrl}
+                  fallback={<WhatsAppIcon className="h-3.5 w-3.5" />}
+                />
+              </a>
+            )}
           </div>
 
           {/* Mobile menu button */}
           <button
             type="button"
             className={`transition-colors lg:hidden ${
-              transparent ? "text-white" : "text-charcoal"
+              transparent
+                ? "text-white"
+                : "text-charcoal"
             }`}
             onClick={() => setMobile(!mobile)}
-            aria-label={mobile ? "Close menu" : "Open menu"}
+            aria-label={
+              mobile ? "Close menu" : "Open menu"
+            }
             aria-expanded={mobile}
           >
             {mobile ? (
-              <X className="h-6 w-6" strokeWidth={1.5} />
+              <X
+                className="h-6 w-6"
+                strokeWidth={1.5}
+              />
             ) : (
-              <Menu className="h-6 w-6" strokeWidth={1.5} />
+              <Menu
+                className="h-6 w-6"
+                strokeWidth={1.5}
+              />
             )}
           </button>
         </div>
@@ -185,7 +256,7 @@ export default function Navbar() {
 
       {/* Desktop Mega Menu */}
       <AnimatePresence>
-        {open && (
+        {activeMenu && activeMenu.items.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
@@ -196,10 +267,10 @@ export default function Navbar() {
           >
             <MegaMenu
               dark={transparent}
-              hubLabel={MENUS[open].label}
-              hubPath={MENUS[open].path}
-              intro={MENUS[open].intro}
-              items={MENUS[open].items}
+              hubLabel={activeMenu.label}
+              hubPath={activeMenu.path}
+              intro={activeMenu.intro}
+              items={activeMenu.items}
             />
           </motion.div>
         )}
@@ -215,44 +286,44 @@ export default function Navbar() {
             className="overflow-hidden glass lg:hidden"
           >
             <div className="space-y-5 px-6 py-6">
-              {Object.values(MENUS).map((menu) => (
-                <div key={menu.path} className="space-y-2">
-                  <Link
-                    href={menu.path}
-                    className="block text-[0.78rem] font-bold uppercase tracking-[0.18em] text-gold-deep"
-                  >
-                    {menu.label}
-                  </Link>
+              {Object.values(menus).map((menu) => {
+                const hasChildren =
+                  menu.items.length > 0;
 
-                  <div className="space-y-1.5 pl-1">
-                    {menu.items.map((item) => (
-                      <Link
-                        key={item.to}
-                        href={item.to}
-                        className="block text-[0.92rem] text-charcoal"
-                      >
-                        {item.title}
-                      </Link>
-                    ))}
+                return (
+                  <div
+                    key={menu.id}
+                    className="space-y-2"
+                  >
+                    {/* Parent */}
+                    <Link
+                      href={menu.path}
+                      className={`block ${
+                        hasChildren
+                          ? "text-[0.78rem] font-bold uppercase tracking-[0.18em] text-gold-deep"
+                          : "text-[0.92rem] text-charcoal"
+                      }`}
+                    >
+                      {menu.label}
+                    </Link>
+
+                    {/* Children */}
+                    {hasChildren && (
+                      <div className="space-y-1.5 pl-1">
+                        {menu.items.map((item) => (
+                          <Link
+                            key={item.id}
+                            href={item.to}
+                            className="block text-[0.92rem] text-charcoal"
+                          >
+                            {item.title}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                </div>
-              ))}
-
-              <div className="space-y-2 border-t border-gold/20 pt-2">
-                {[
-                  ["About", "/about"],
-                  ["Blog", "/media"],
-                  ["Contact", "/contact"],
-                ].map(([label, href]) => (
-                  <Link
-                    key={href}
-                    href={href}
-                    className="block text-[0.92rem] text-charcoal"
-                  >
-                    {label}
-                  </Link>
-                ))}
-              </div>
+                );
+              })}
             </div>
           </motion.div>
         )}

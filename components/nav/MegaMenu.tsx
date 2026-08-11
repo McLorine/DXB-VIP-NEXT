@@ -1,12 +1,16 @@
+"use client";
+
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
-import Icon from "@/components/common/Icon";
+
+import { useSvg } from "@/hooks/useSvg";
 
 type Item = {
+  id: string;
   to: string;
   title: string;
   desc: string;
-  icon?: string;
+  icon?: string | null;
 };
 
 type Props = {
@@ -16,6 +20,68 @@ type Props = {
   items: Item[];
   dark?: boolean;
 };
+
+function InlineSvgIcon({
+  src,
+  dark,
+}: {
+  src?: string | null;
+  dark: boolean;
+}) {
+  const { svg, isSvg } = useSvg(src);
+
+  const iconBorder = dark
+    ? "border-white/25 text-gold group-hover:border-gold group-hover:bg-gold/15"
+    : "border-gold/30 text-gold group-hover:border-gold group-hover:bg-gold/10";
+
+  // Determine what to render inside the icon container
+  let iconContent: React.ReactNode;
+
+  if (isSvg && svg) {
+    // SVG from WordPress — render inline
+    iconContent = (
+      <span
+        className="
+          flex
+          h-5
+          w-5
+          items-center
+          justify-center
+          [&>svg]:h-5
+          [&>svg]:w-5
+          [&>svg]:max-h-5
+          [&>svg]:max-w-5
+        "
+        dangerouslySetInnerHTML={{
+          __html: svg,
+        }}
+      />
+    );
+  } else if (src && !isSvg) {
+    // Non-SVG image URL (png, jpg, webp, etc.) — render as <img>
+    iconContent = (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={src}
+        alt=""
+        className="h-5 w-5 object-contain"
+      />
+    );
+  } else {
+    // No icon provided — small dot fallback
+    iconContent = (
+      <span className="h-1.5 w-1.5 rounded-full bg-current opacity-50" />
+    );
+  }
+
+  return (
+    <span
+      className={`mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border transition-colors ${iconBorder}`}
+    >
+      {iconContent}
+    </span>
+  );
+}
 
 export default function MegaMenu({
   intro,
@@ -50,15 +116,13 @@ export default function MegaMenu({
     ? "hover:bg-white/10"
     : "hover:bg-white/70";
 
-  const iconBorder = dark
-    ? "border-white/25 text-gold group-hover:border-gold group-hover:bg-gold/15"
-    : "border-gold/30 text-gold group-hover:border-gold group-hover:bg-gold/10";
-
   return (
     <div
       className={`${bg} rounded-2xl p-8 shadow-[0_40px_80px_-40px_rgba(26,26,26,0.35)]`}
     >
       <div className="grid gap-8 md:grid-cols-[260px_1fr]">
+
+        {/* Left column */}
         <div
           className={`flex flex-col justify-between gap-6 md:border-r ${borderColor} md:pr-8`}
         >
@@ -67,11 +131,13 @@ export default function MegaMenu({
               {hubLabel}
             </span>
 
-            <p
-              className={`text-sm leading-relaxed ${introText}`}
-            >
-              {intro}
-            </p>
+            {intro && (
+              <p
+                className={`text-sm leading-relaxed ${introText}`}
+              >
+                {intro}
+              </p>
+            )}
           </div>
 
           <Link
@@ -87,38 +153,40 @@ export default function MegaMenu({
           </Link>
         </div>
 
+        {/* Menu items */}
         <div className="grid gap-2 sm:grid-cols-2">
           {items.map((item) => (
             <Link
-              key={item.to}
+              key={item.id}
               href={item.to}
               className={`group flex items-start gap-3 rounded-xl p-3.5 transition-colors ${itemHoverBg}`}
             >
-              <span
-                className={`mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border transition-colors ${iconBorder}`}
-              >
-                <Icon
-                  name={item.icon}
-                  className="h-4 w-4"
-                />
-              </span>
+              {/* WordPress SVG */}
+              <InlineSvgIcon
+                src={item.icon}
+                dark={dark}
+              />
 
-              <span>
+              {/* Text */}
+              <span className="min-w-0">
                 <span
                   className={`block text-[0.95rem] ${itemTitle}`}
                 >
                   {item.title}
                 </span>
 
-                <span
-                  className={`block text-[0.8rem] leading-snug ${itemDesc}`}
-                >
-                  {item.desc}
-                </span>
+                {item.desc && (
+                  <span
+                    className={`block text-[0.8rem] leading-snug ${itemDesc}`}
+                  >
+                    {item.desc}
+                  </span>
+                )}
               </span>
             </Link>
           ))}
         </div>
+
       </div>
     </div>
   );

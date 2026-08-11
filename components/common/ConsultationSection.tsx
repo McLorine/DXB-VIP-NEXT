@@ -1,19 +1,28 @@
+"use client"
 import React from "react";
 import Reveal from "@/components/common/Reveal";
 import ConsultationForm from "@/components/forms/ConsultationForm";
 import { Image } from "@/components/ui/image";
-import { IMAGES } from "@/lib/siteData";
+import type { ConsultationBlock } from "@/lib/wordpress/types";
 
-export default function ConsultationSection({ sourcePage = "home", compact = false }) {
+export default function ConsultationSection(block: ConsultationBlock) {
+  const { consultationBackgroundImage } = block;
+
   return (
     <section id="consultation" className="relative overflow-hidden scroll-mt-24 py-24 md:py-32">
       <div className="absolute inset-0">
-        <Image src={IMAGES.stillLife} alt="Fountain pen and leather portfolio on a marble desk" className="h-full w-full" />
+        {consultationBackgroundImage?.node && (
+          <Image
+            src={consultationBackgroundImage.node.sourceUrl}
+            alt={consultationBackgroundImage.node.altText || ""}
+            className="h-full w-full"
+          />
+        )}
         <div className="absolute inset-0 bg-alabaster/85" />
       </div>
-      <div className={`relative mx-auto px-6 lg:px-10 ${compact ? "max-w-3xl" : "max-w-4xl"}`}>
+      <div className="relative mx-auto max-w-4xl px-6 lg:px-10">
         <Reveal>
-          <ConsultationForm sourcePage={sourcePage} />
+          <ConsultationForm block={block} />
         </Reveal>
       </div>
     </section>
