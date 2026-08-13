@@ -60,19 +60,21 @@ export default function CustomLeadForm({ fields, sourcePage, submitButtonText, p
     <form onSubmit={submit}>
       <div className="grid gap-4 sm:grid-cols-2">
         {fields.map((f) => {
-          const wide = f.fieldType === "textarea" || f.fieldType === "select";
+          const rawFieldType = String(f.fieldType ?? "text").toLowerCase().trim();
+          const isTextarea = rawFieldType === "textarea" || rawFieldType === "text area";
+          const isSelect = rawFieldType === "select" || rawFieldType === "dropdown" || rawFieldType === "select box";
+          const inputType = isTextarea || isSelect ? "text" : rawFieldType;
+          const wide = isTextarea || isSelect;
+          const options = isSelect ? (f.fieldOptions ?? []).map((o) => o.optionLabel) : undefined;
+
           return (
             <div key={f.fieldName} className={wide ? "sm:col-span-2" : undefined}>
               <FloatingField
                 label={f.fieldLabel}
                 name={f.fieldName}
-                type={f.fieldType === "select" || f.fieldType === "textarea" ? undefined : f.fieldType}
-                textarea={f.fieldType === "textarea"}
-                options={
-                  f.fieldType === "select"
-                    ? (f.fieldOptions ?? []).map((o) => o.optionLabel)
-                    : undefined
-                }
+                type={inputType}
+                textarea={isTextarea}
+                options={options}
                 value={form[f.fieldName] ?? ""}
                 onChange={onChange}
                 required={f.fieldRequired}

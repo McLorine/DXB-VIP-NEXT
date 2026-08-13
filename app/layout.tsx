@@ -6,6 +6,7 @@ import MobileBar from "@/components/nav/MobileBar";
 import NavbarWrapper from "@/components/layout/NavbarWrapper";
 import { getFooterBottomNavigation, getFooterNavigation } from "@/lib/wordpress/menu";
 import { getThemeSettings } from "@/lib/wordpress/themeSettings";
+import { LanguageProvider } from "@/lib/i18n/LanguageContext";
 
 const tenorSans = Tenor_Sans({
   variable: "--font-tenor-sans",
@@ -37,17 +38,21 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       className={`${tenorSans.variable} ${publicSans.variable} h-full scroll-smooth antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <NavbarWrapper />
+        <LanguageProvider>
 
-        <main>
-          {children}
-        </main>
-        <Footer
-          menuItems={footerMenuItems}
-          bottomMenuItems={bottomMenuItems}
-          themeSettings={themeSettings}
-        />
-        <MobileBar themeSettings={themeSettings} />
+          <NavbarWrapper />
+
+          <main>
+            {children}
+          </main>
+          <Footer
+            menuItems={footerMenuItems}
+            bottomMenuItems={bottomMenuItems}
+            themeSettings={themeSettings}
+          />
+          <MobileBar themeSettings={themeSettings} />
+        </LanguageProvider>
+
       </body>
     </html>
   );

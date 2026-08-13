@@ -17,7 +17,7 @@ export default function Founders({
   foundersButtonLink,
 }: FoundersBlock) {
   return (
-    <section className="bg-sand py-24 md:py-36">
+    <section className="py-24 md:py-36">
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
         <SectionHeading
           eyebrow={foundersEyebrow}
@@ -48,12 +48,12 @@ export default function Founders({
                     dangerouslySetInnerHTML={{ __html: f.founderBio }}
                   />
                 </div>
-                <div className="mt-5 border-t border-black/5 pt-4">
+                <>
                   <h3 className="text-[1.1rem]">{f.founderName}</h3>
                   <span className="text-[0.68rem] uppercase tracking-[0.18em] text-gold-deep">
                     {f.founderRole}
                   </span>
-                </div>
+                </>
               </div>
             </Reveal>
           ))}

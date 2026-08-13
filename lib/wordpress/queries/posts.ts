@@ -3,6 +3,12 @@
 // Used only by the Blog Preview section, which shows real WordPress posts
 // rather than ACF-authored content. Kept separate from PAGE_BY_SLUG_QUERY so
 // every page load doesn't pay for a posts fetch it doesn't need.
+//
+// NOTE: there is no built-in "read time" field in WPGraphQL. Read time is
+// computed client-side in getPage.ts from the post excerpt/content length
+// instead of being queried — don't add a `readMinutes` field here unless
+// you've actually registered one (e.g. via ACF with show_in_graphql on the
+// post type), or the whole query will fail.
 // ============================================================================
 
 export const LATEST_POSTS_QUERY = /* GraphQL */ `
@@ -12,19 +18,18 @@ export const LATEST_POSTS_QUERY = /* GraphQL */ `
       where: { categoryId: $categoryId, orderby: { field: DATE, order: DESC } }
     ) {
       nodes {
-        id
+        __typename
         databaseId
         title
         slug
         date
         excerpt
-        categories(first: 1) {
-          nodes { name }
-        }
         featuredImage {
           node { sourceUrl altText }
         }
-      
+        categories {
+          nodes { databaseId name slug }
+        }
       }
     }
   }

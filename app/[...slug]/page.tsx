@@ -1,32 +1,50 @@
 import { notFound } from "next/navigation";
-import { getPageBySlug } from "@/lib/wordpress/getPage";
-import { getAllPageSlugs } from "@/lib/wordpress/getAllPageSlugs";
+import { getContentByUri } from "@/lib/wordpress/getNodeByUri";
+import { getAllContentSlugs } from "@/lib/wordpress/getAllContentSlugs";
 import SectionRenderer from "@/components/sections/SectionRenderer";
+import BlogPostView from "@/components/common/BlogPostView";
+import SyncTranslations from "@/components/i18n/SyncTranslations";
 
 export const dynamicParams = true;
-export const revalidate = 3600;
 
 export async function generateStaticParams() {
-  const uris = await getAllPageSlugs();
-
-  return uris
-    .filter((uri) => uri !== "/")
-    .map((uri) => ({
-      slug: uri.replace(/^\/|\/$/g, "").split("/"),
-    }));
+  const slugs = await getAllContentSlugs();
+  return slugs.map((slug) => ({ slug: slug.split("/") }));
 }
 
-export default async function CatchAllPage({
+export default async function DynamicRoute({
   params,
 }: {
   params: Promise<{ slug: string[] }>;
 }) {
-  const { slug } = await params; // <-- the fix: await before destructuring
-  const uri = "/" + slug.join("/") + "/";
+  const { slug } = await params;
+  const uri = slug.join("/");
+  const result = await getContentByUri(uri);
 
-  const page = await getPageBySlug(uri);
+  if (!result) return notFound();
 
-  if (!page) notFound();
+  if (result.type === "page") {
+    return (
+      <>
+        <SyncTranslations
+          currentLanguage={result.page.language}
+          translations={result.page.translations}
+        />
+        <SectionRenderer
+          blocks={result.page.pageContent?.pageBuilder ?? []}
+          latestPosts={result.page.latestPosts}
+        />
+      </>
+    );
+  }
 
-  return <SectionRenderer blocks={page.pageContent?.pageBuilder ?? []} />;
+  return (
+    <>
+      <SyncTranslations
+        currentLanguage={result.post.language}
+        translations={result.post.translations}
+      />
+      <BlogPostView post={result.post} />
+    </>
+  );
 }

@@ -19,5 +19,5 @@ export interface HeroBlock {
       altText: string;
     };
   } | null;
-  heroStatistics: HeroStat[];
+  heroStatistics: HeroStat[] | null;
 }

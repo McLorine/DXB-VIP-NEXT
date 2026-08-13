@@ -15,10 +15,10 @@ export default function ConsultationSection(block: ConsultationBlock) {
           <Image
             src={consultationBackgroundImage.node.sourceUrl}
             alt={consultationBackgroundImage.node.altText || ""}
-            className="h-full w-full"
+            className="h-full w-full object-cover"
           />
         )}
-        <div className="absolute inset-0 bg-alabaster/85" />
+        <div className="absolute inset-0 bg-alabaster/70" />
       </div>
       <div className="relative mx-auto max-w-4xl px-6 lg:px-10">
         <Reveal>

@@ -12,6 +12,7 @@ import Logo from "@/components/common/Logo";
 import WhatsAppIcon from "@/components/common/WhatsAppIcon";
 import { useSvg } from "@/hooks/useSvg";
 import type { ThemeSettings } from "@/lib/wordpress/themeSettings";
+import LanguageSwitcher from "../i18n/LanguageSwitcher";
 
 type MenuItem = {
   id: string;
@@ -104,8 +105,8 @@ export default function Navbar({ menus, themeSettings }: NavbarProps) {
     setOpen(null);
   }, [pathname]);
 
-  const isHome = pathname === "/";
-  const transparent = isHome && !scrolled;
+  const hasDarkHero = ["/", "/about"].includes(pathname);
+  const transparent = hasDarkHero && !scrolled;
 
   const linkColor = transparent
     ? "text-white hover:text-gold"
@@ -131,7 +132,7 @@ export default function Navbar({ menus, themeSettings }: NavbarProps) {
       >
         <div className="mx-auto flex h-[74px] max-w-7xl items-center justify-between px-6 lg:px-10">
           {themeSettings?.logoUrl && (
-            <Logo className="h-9" light={transparent} src={themeSettings.logoUrl} />
+            <Logo className="h-9" gold src={themeSettings.logoUrl} />
           )}
 
           {/* Desktop navigation */}
@@ -182,6 +183,7 @@ export default function Navbar({ menus, themeSettings }: NavbarProps) {
 
           {/* Desktop actions */}
           <div className="hidden items-center gap-1.5 lg:flex">
+            <LanguageSwitcher />
             {themeSettings?.headerCta?.url && (
               <GoldButton
                 to={themeSettings.headerCta.url}

@@ -20,7 +20,7 @@ export default function WhyChoose({
   whyChooseButtonLink,
 }: WhyChooseBlock) {
   return (
-    <section className="py-24 md:py-36 bg-sand">
+    <section className="py-24 md:py-36">
       <div className="mx-auto max-w-7xl px-6 lg:px-10 grid gap-16 lg:grid-cols-[1fr_1.05fr] lg:items-center">
         <Reveal className="relative">
           <div className="overflow-hidden rounded-[20px]">

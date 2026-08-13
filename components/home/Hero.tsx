@@ -26,11 +26,11 @@ export default function Hero(props: HeroBlock) {
         <Image
           src={heroBackgroundImage?.node?.sourceUrl ?? ""}
           alt={heroBackgroundImage?.node?.altText || "Hero background"}
-          className="h-full w-full"
+          className="h-full w-full object-cover"
           focalPointY={0.4}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-charcoal via-charcoal/85 to-charcoal/30" />
-        <div className="absolute inset-0 bg-gradient-to-t from-charcoal via-charcoal/30 to-charcoal/60" />
+        <div className="absolute inset-0 bg-gradient-to-r from-charcoal via-charcoal/55 to-charcoal/10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-charcoal/80 via-transparent to-charcoal/30" />
       </div>
 
       <div className="relative mx-auto w-full max-w-7xl px-6 lg:px-10 pt-40 pb-16">
@@ -48,16 +48,24 @@ export default function Hero(props: HeroBlock) {
             {heroDescription?.trim()}
           </p>
           <div className="mt-9 flex flex-wrap items-center gap-4">
-            <GoldButton to={heroPrimaryButtonLink} className="bg-white text-charcoal hover:bg-white/90">
-              {heroPrimaryButtonText}
-            </GoldButton>
-            <GoldButton
-              to={heroSecondaryButtonLink}
-              variant="outline"
-              className="border-white/50 text-white hover:bg-white/10 hover:text-white"
-            >
-              {heroSecondaryButtonText}
-            </GoldButton>
+            {heroPrimaryButtonText && heroPrimaryButtonLink && (
+              <GoldButton
+                to={heroPrimaryButtonLink}
+                className="bg-gold-deep text-white hover:bg-gold hover:shadow-[0_18px_40px_-18px_rgba(197,160,89,0.8)]"
+              >
+                {heroPrimaryButtonText}
+              </GoldButton>
+            )}
+
+            {heroSecondaryButtonText && heroSecondaryButtonLink && (
+              <GoldButton
+                to={heroSecondaryButtonLink}
+                variant="outline"
+                className="text-white hover:bg-white/10 hover:text-white"
+              >
+                {heroSecondaryButtonText}
+              </GoldButton>
+            )}
           </div>
         </motion.div>
 

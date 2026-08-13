@@ -52,7 +52,7 @@ export default function FaqAccordion({ items }: Props) {
                   className="overflow-hidden"
                 >
                   <div
-                    className="pb-7 pr-10 max-w-3xl text-slatewarm leading-relaxed"
+                    className="pb-7 pr-10 max-w-3xl text-slatewarm leading-relaxed wysiwyg-content"
                     dangerouslySetInnerHTML={{ __html: it.answer }}
                   />
                 </motion.div>

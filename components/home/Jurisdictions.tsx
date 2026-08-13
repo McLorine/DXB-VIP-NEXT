@@ -33,7 +33,10 @@ export default function Jurisdictions({
           </p>
         </Reveal>
 
-        <div className="mt-16 grid gap-6 md:grid-cols-3">
+        <div
+          className="mt-16 grid gap-6"
+          style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(350px, 100%), 1fr))" }}
+        >
           {jurisdictionsCards.map((card, index) => (
             <Reveal key={card.cardTitle} delay={index * 0.12}>
               <Link

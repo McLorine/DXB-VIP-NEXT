@@ -108,12 +108,12 @@ export default function Footer({
 
   return (
     <footer className="border-t-2 border-gold bg-charcoal pb-28 text-white/70 lg:pb-0">
-      <div className="mx-auto grid max-w-7xl gap-14 px-6 py-20 md:grid-cols-2 lg:grid-cols-4 lg:px-10">
+      <div className="mx-auto grid max-w-7xl gap-14 px-6 py-20 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr] lg:px-10">
 
         {/* Brand */}
         <div className="space-y-5">
           {themeSettings?.logoUrl ? (
-            <Logo className="h-9" src={themeSettings.logoUrl} />
+            <Logo className="h-9" gold src={themeSettings.logoUrl} />
           ) : (
             <Link
               href="/"
@@ -130,7 +130,7 @@ export default function Footer({
           )}
 
           {socialLinks.length > 0 && (
-            <div className="flex gap-3 pt-2">
+            <div className="flex flex-wrap gap-3 pt-2">
               {socialLinks.map(
                 ({ label, href, icon: Icon }) => (
                   <a

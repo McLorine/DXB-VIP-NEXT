@@ -3,18 +3,20 @@ import type { HeroStat } from "@/types/wordpress";
 
 export default function StatStrip({
   dark = false,
-  stats = [],
+  stats,
 }: {
   dark?: boolean;
-  stats?: HeroStat[];
+  stats?: HeroStat[] | null;
 }) {
-  if (!stats.length) return null;
+  const safeStats = Array.isArray(stats) ? stats : [];
+
+  if (!safeStats.length) return null;
 
   return (
     <div
       className={`${dark ? "glass-dark" : "glass"} rounded-2xl grid grid-cols-2 md:grid-cols-4 divide-y divide-x md:divide-y-0 divide-gold/20`}
     >
-      {stats.map((s) => (
+      {safeStats.map((s) => (
         <div key={s.label} className="px-6 py-6 text-center first:border-l-0">
           <div className={`font-heading text-2xl md:text-3xl ${dark ? "text-white" : "text-charcoal"}`}>
             {s.value}

@@ -26,7 +26,7 @@ export default function ServiceCard({
   return (
     <Link
       href={serviceLink?.url ?? "#"}
-      className="monolith group flex flex-col gap-4 p-7"
+      className="monolith group flex flex-col gap-4 p-7 h-full"
     >
       {iconUrl && (
         <span className="flex h-12 w-12 items-center justify-center rounded-xl border border-gold/30 text-gold transition-colors group-hover:bg-gold/10">

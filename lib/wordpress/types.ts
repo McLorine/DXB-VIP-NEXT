@@ -38,7 +38,7 @@ export interface HeroBlock {
   heroSecondaryButtonText: string;
   heroSecondaryButtonLink: string;
   heroBackgroundImage: ACFImage;
-  heroStatistics: HeroStat[];
+  heroStatistics: HeroStat[] | null;
 }
 
 // ---- Services -----------------------------------------------------------
@@ -235,6 +235,93 @@ export interface CtaBandBlock {
 
 // ---- ⬇ ADD NEW SECTION INTERFACES ABOVE THIS LINE ⬇ -----------------------
 
+// ---- Reviews -----------------------------------------------------------
+
+export interface ReviewItem {
+  reviewerName: string;
+  reviewerRole: string;
+  reviewerRating: number;
+  reviewerDate: string;
+  reviewerText: string;
+}
+
+export interface ReviewsBlock {
+  __typename: "PageContentPageBuilderReviewsLayout";
+  reviewsEyebrow: string;
+  reviewsHeading: string;
+  reviewsDescription: string;
+  reviewsRatingValue: string;
+  reviewsCountLabel: string;
+  reviewsItems: ReviewItem[];
+}
+
+export interface PartnerItem {
+  partnerLogo: {
+    node: { sourceUrl: string; altText: string; mimeType: string };
+  } | null;
+  partnerName: string;
+}
+
+export interface PartnersBlock {
+  __typename: "PageContentPageBuilderPartnersLayout";
+  partnersEyebrow: string;
+  partnersItems: PartnerItem[];
+}
+
+// ---- Text ---------------------------------------------------------------
+
+export interface TextBlock {
+  __typename: "PageContentPageBuilderTextLayout";
+  /** Raw HTML from the ACF wysiwyg field. */
+  textEditor: string;
+}
+
+// ---- Our Office -----------------------------------------------------------
+
+export interface OfficeGalleryImage {
+  galleryImage: {
+    node: { sourceUrl: string; altText: string };
+  } | null;
+  galleryLabel: string;
+}
+
+export interface FamilyCompany {
+  companyName: string;
+  companyDescription: string;
+  companyUrl: string | null;
+}
+
+export interface OurOfficeBlock {
+  __typename: "PageContentPageBuilderOurOfficeLayout";
+  officeEyebrow: string;
+  officeHeading: string;
+  officeDescription: string;
+  officeParagraphTwo: string;
+  officeParagraphThree: string;
+  officeGallery: OfficeGalleryImage[];
+  officeBadgeLabel: string;
+  officeBadgeLocation: string;
+  officeFamilyCompanies: FamilyCompany[];
+}
+
+// ---- Team -----------------------------------------------------------------
+
+export interface TeamMember {
+  memberPhoto: {
+    node: { sourceUrl: string; altText: string };
+  } | null;
+  memberName: string;
+  memberRole: string;
+}
+
+export interface TeamBlock {
+  __typename: "PageContentPageBuilderTeamLayout";
+  teamEyebrow: string;
+  teamHeading: string;
+  teamDescription: string;
+  teamMembers: TeamMember[];
+}
+
 // ---- Union -------------------------------------------------------------
 
 /** Every possible block that can appear in a page's flexible content. */
@@ -249,9 +336,42 @@ export type PageBuilderBlock =
   | BlogPreviewBlock
   | ConsultationBlock
   | FaqBlock
-  | CtaBandBlock;
+  | CtaBandBlock
+  | ReviewsBlock
+  | PartnersBlock
+  | TextBlock
+  | OurOfficeBlock
+  | TeamBlock;
 
 // ---- Posts (separate from the page builder blocks) ------------------------
+
+
+export interface WPPost {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  author: string;
+  categoryName: string;
+  coverUrl: string;
+  coverAlt: string;
+  publishedOn: string;
+  language?: WPLanguage;
+  translations?: WPTranslation[];
+}
+
+export interface WPLanguage {
+  code: string;
+  slug: string;
+  name: string;
+  locale: string;
+}
+
+export interface WPTranslation {
+  uri: string;
+  language: WPLanguage;
+}
 
 export interface WPPostSummary {
   id: string;
@@ -259,15 +379,30 @@ export interface WPPostSummary {
   slug: string;
   excerpt: string;
   categoryName: string;
+  readMinutes: number;
   coverUrl: string;
   publishedOn: string;
 }
 
+export interface WPPost {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  author: string;
+  categoryName: string;
+  coverUrl: string;
+  coverAlt: string;
+  publishedOn: string;
+  language?: WPLanguage;
+  translations?: WPTranslation[];
+}
+
 export interface WPPage {
   title: string;
-  pageContent: {
-    pageBuilder: PageBuilderBlock[];
-  } | null;
-  /** Populated only when the page contains a Blog Preview block. */
+  pageContent: { pageBuilder: any[] };
   latestPosts?: WPPostSummary[];
+  language?: WPLanguage;
+  translations?: WPTranslation[];
 }

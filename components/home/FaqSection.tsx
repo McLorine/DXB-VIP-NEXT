@@ -15,9 +15,8 @@ export default function FaqSection({
   faqItems,
 }: FaqBlock) {
 
-  console.log("faqItems", faqItems);
   return (
-    <section className="bg-sand py-24 md:py-36">
+    <section className="py-24 md:py-36">
       <div className="mx-auto max-w-7xl px-6 lg:px-10 grid gap-14 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
         <div>
           <SectionHeading eyebrow={faqEyebrow} title={faqHeading} intro={faqDescription} />

@@ -4,6 +4,15 @@
 
 const endpoint = process.env.WORDPRESS_API_URL!;
 
+export class GraphQLRequestError extends Error {
+  errors: any[];
+  constructor(message: string, errors: any[]) {
+    super(message);
+    this.name = "GraphQLRequestError";
+    this.errors = errors;
+  }
+}
+
 export async function fetchGraphQL<T>(
   query: string,
   variables: Record<string, unknown> = {},
@@ -24,7 +33,10 @@ export async function fetchGraphQL<T>(
 
   if (json.errors) {
     console.error(JSON.stringify(json.errors, null, 2));
-    throw new Error("WPGraphQL returned errors — check server logs");
+    throw new GraphQLRequestError(
+      "WPGraphQL returned errors — check server logs",
+      json.errors
+    );
   }
 
   return json.data as T;

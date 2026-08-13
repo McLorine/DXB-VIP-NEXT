@@ -23,9 +23,12 @@ export default function ServicesGrid(props: ServicesBlock) {
           title={servicesSectionTitle}
           intro={servicesSectionDescription}
         />
-        <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div 
+          className="mt-14 grid gap-6"
+          style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(240px, 100%), 1fr))" }}
+        >
           {servicesItems.map((service, i) => (
-            <Reveal key={`${service.serviceTitle}-${i}`} delay={(i % 4) * 0.08}>
+            <Reveal key={`${service.serviceTitle}-${i}`} delay={(i % 4) * 0.08} className="h-full">
               <ServiceCard service={service} />
             </Reveal>
           ))}

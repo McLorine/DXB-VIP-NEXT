@@ -1,3 +1,4 @@
+"use client"
 import React from "react";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
@@ -15,10 +16,12 @@ export default function BlogPreview({
   blogPreviewViewAllLink,
   articles = [],
 }: Props) {
+
+  console.log("articles", articles)
   if (!articles.length) return null;
 
   return (
-    <section className="py-24 md:py-36">
+    <section className="py-24 md:py-36 bg-sand">
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
         <div className="flex flex-wrap items-end justify-between gap-8">
           <SectionHeading eyebrow={blogPreviewEyebrow} title={blogPreviewHeading} />

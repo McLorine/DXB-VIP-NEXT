@@ -14,7 +14,7 @@ export default function Benefits({
   benefitsItems,
 }: BenefitsBlock) {
   return (
-    <section className="py-24 md:py-36">
+    <section className="py-24 md:py-36 bg-sand">
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
         <SectionHeading
           eyebrow={benefitsEyebrow}

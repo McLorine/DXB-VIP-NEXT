@@ -20,6 +20,11 @@ import BlogPreview from "@/components/home/BlogPreview";
 import ConsultationSection from "@/components/common/ConsultationSection";
 import FaqSection from "@/components/home/FaqSection";
 import CtaBand from "@/components/common/CtaBand";
+import Reviews from "@/components/home/Reviews";
+import Partners from "@/components/home/Partners";
+import Text from "@/components/common/Text";
+import OurOffice from "@/components/about/OurOffice";
+import TeamSlider from "@/components/about/TeamSlider";
 
 export const SECTION_REGISTRY: Record<string, ComponentType<any>> = {
   PageContentPageBuilderHeroLayout: Hero,
@@ -33,5 +38,10 @@ export const SECTION_REGISTRY: Record<string, ComponentType<any>> = {
   PageContentPageBuilderConsultationLayout: ConsultationSection,
   PageContentPageBuilderFaqLayout: FaqSection,
   PageContentPageBuilderCtaBandLayout: CtaBand,
+  PageContentPageBuilderReviewsLayout: Reviews,
+  PageContentPageBuilderPartnersLayout: Partners,
+  PageContentPageBuilderTextLayout: Text,
+  PageContentPageBuilderOurOfficeLayout: OurOffice,
+  PageContentPageBuilderTeamLayout: TeamSlider, 
   // ⬅ add new "<Typename>": Component here
 };
