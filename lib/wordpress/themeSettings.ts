@@ -59,46 +59,48 @@ export interface ThemeSettings {
 const THEME_SETTINGS_QUERY = `
   query GetThemeSettings {
     themeSettings {
-      themeLogo {
-        node {
-          sourceUrl
-          altText
+      themeSettingsFields {
+        themeLogo {
+          node {
+            sourceUrl
+            altText
+          }
         }
-      }
-      heroCtaButtonLink {
-        url
-        title
-        target
-      }
-      phoneNumber
-      whatsappNumber
-      emailAddress
-      phoneIcon {
-        node {
-          sourceUrl
-          altText
+        heroCtaButtonLink {
+          url
+          title
+          target
         }
-      }
-      whatsappIcon {
-        node {
-          sourceUrl
-          altText
+        phoneNumber
+        whatsappNumber
+        emailAddress
+        phoneIcon {
+          node {
+            sourceUrl
+            altText
+          }
         }
-      }
-      footerDescription
-      copyrightText
-      footerAddress
-      footerWorkingHours
-      socialFacebook
-      socialInstagram
-      socialYoutube
-      socialTiktok
-      socialX
-      socialLinkedin
-      socialPinterest
-      customSocials {
-        name
-        url
+        whatsappIcon {
+          node {
+            sourceUrl
+            altText
+          }
+        }
+        footerDescription
+        copyrightText
+        footerAddress
+        footerWorkingHours
+        socialFacebook
+        socialInstagram
+        socialYoutube
+        socialTiktok
+        socialX
+        socialLinkedin
+        socialPinterest
+        customSocials {
+          name
+          url
+        }
       }
     }
   }
@@ -110,25 +112,27 @@ const THEME_SETTINGS_QUERY = `
 
 type RawThemeSettings = {
   themeSettings: {
-    themeLogo: { node: { sourceUrl: string; altText: string } } | null;
-    heroCtaButtonLink: { url: string; title: string | null; target: string | null } | null;
-    phoneNumber: string | null;
-    whatsappNumber: string | null;
-    emailAddress: string | null;
-    phoneIcon: { node: { sourceUrl: string; altText: string } } | null;
-    whatsappIcon: { node: { sourceUrl: string; altText: string } } | null;
-    footerDescription: string | null;
-    copyrightText: string | null;
-    footerAddress: string | null;
-    footerWorkingHours: string | null;
-    socialFacebook: string | null;
-    socialInstagram: string | null;
-    socialYoutube: string | null;
-    socialTiktok: string | null;
-    socialX: string | null;
-    socialLinkedin: string | null;
-    socialPinterest: string | null;
-    customSocials: { name: string; url: string }[] | null;
+    themeSettingsFields: {
+      themeLogo: { node: { sourceUrl: string; altText: string } } | null;
+      heroCtaButtonLink: { url: string; title: string | null; target: string | null } | null;
+      phoneNumber: string | null;
+      whatsappNumber: string | null;
+      emailAddress: string | null;
+      phoneIcon: { node: { sourceUrl: string; altText: string } } | null;
+      whatsappIcon: { node: { sourceUrl: string; altText: string } } | null;
+      footerDescription: string | null;
+      copyrightText: string | null;
+      footerAddress: string | null;
+      footerWorkingHours: string | null;
+      socialFacebook: string | null;
+      socialInstagram: string | null;
+      socialYoutube: string | null;
+      socialTiktok: string | null;
+      socialX: string | null;
+      socialLinkedin: string | null;
+      socialPinterest: string | null;
+      customSocials: { name: string | null; url: string | null }[] | null;
+    };
   };
 };
 
@@ -143,7 +147,7 @@ export async function getThemeSettings(): Promise<ThemeSettings> {
     ["theme-settings"],
   );
 
-  const ts = data.themeSettings;
+  const ts = data.themeSettings.themeSettingsFields;
 
   return {
     logoUrl: ts.themeLogo?.node.sourceUrl ?? null,
@@ -180,6 +184,10 @@ export async function getThemeSettings(): Promise<ThemeSettings> {
     socialX: ts.socialX ?? null,
     socialLinkedin: ts.socialLinkedin ?? null,
     socialPinterest: ts.socialPinterest ?? null,
-    customSocials: ts.customSocials ?? null,
+    customSocials: ts.customSocials
+      ? ts.customSocials
+          .filter((row) => row.name && row.url)
+          .map((row) => ({ name: row.name as string, url: row.url as string }))
+      : null,
   };
 }

@@ -9,15 +9,20 @@ import { ALL_FRAGMENTS, ALL_INLINE_SPREADS } from "../fragments";
 export const PAGE_BY_SLUG_QUERY = /* GraphQL */ `
   query PageBySlug($uri: ID!) {
     page(id: $uri, idType: URI) {
+      databaseId
       title
+      uri
+
       language {
         code
         slug
         name
         locale
       }
+
       translations {
         uri
+
         language {
           code
           slug
@@ -25,6 +30,7 @@ export const PAGE_BY_SLUG_QUERY = /* GraphQL */ `
           locale
         }
       }
+
       pageContent {
         pageBuilder {
           __typename
@@ -33,5 +39,6 @@ export const PAGE_BY_SLUG_QUERY = /* GraphQL */ `
       }
     }
   }
+
   ${ALL_FRAGMENTS}
 `;

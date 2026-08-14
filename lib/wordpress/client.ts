@@ -16,7 +16,7 @@ export class GraphQLRequestError extends Error {
 export async function fetchGraphQL<T>(
   query: string,
   variables: Record<string, unknown> = {},
-  tags: string[] = [] // cache tags — enables revalidateTag() from the webhook route
+  tags: string[] = []
 ): Promise<T> {
   const res = await fetch(endpoint, {
     method: "POST",
@@ -32,7 +32,9 @@ export async function fetchGraphQL<T>(
   const json = await res.json();
 
   if (json.errors) {
-    console.error(JSON.stringify(json.errors, null, 2));
+    // Don't log here — some callers (e.g. getContentByUri's front-page
+    // fallback path) expect and handle specific GraphQL errors as normal
+    // control flow, not failures. Let the caller decide whether to log.
     throw new GraphQLRequestError(
       "WPGraphQL returned errors — check server logs",
       json.errors

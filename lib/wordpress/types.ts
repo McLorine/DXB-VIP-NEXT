@@ -322,6 +322,89 @@ export interface TeamBlock {
   teamMembers: TeamMember[];
 }
 
+// ---- Business Setup --------------------------------------------------------
+
+// ---- shared shape used by any inline ConsultationForm instance -------------
+
+export interface ConsultationFormFields {
+  consultationEyebrow: string;
+  consultationHeading: string;
+  consultationDescription: string;
+  consultationSourcePage: string;
+  consultationFormType: "cf7" | "custom";
+  consultationCf7FormId: string | null;
+  consultationCustomFields: ConsultationCustomField[];
+  consultationSubmitButtonText: string;
+  consultationPrivacyText: string;
+}
+
+export interface ConsultationBlock extends ConsultationFormFields {
+  __typename: "PageContentPageBuilderConsultationLayout";
+  consultationBackgroundImage: ACFImage;
+}
+
+export interface BusinessSetupParagraph {
+  paragraphText: string;
+}
+
+export interface BusinessSetupBlock {
+  __typename: "PageContentPageBuilderBusinessSetupLayout";
+  businessSetupEyebrow: string;
+  businessSetupTitle: string;
+  businessSetupContent: string; // HTML from WYSIWYG, multiple <p> paragraphs
+  businessSetupTimeline: string;
+  businessSetupPriceFrom: string;
+  businessSetupConsultationForm: ConsultationFormFields;
+}
+
+// ---- Is It Right For You ----------------------------------------------------
+
+export interface BestForPoint {
+  pointText: string;
+}
+
+export interface IsItRightForYouBlock {
+  __typename: "PageContentPageBuilderIsItRightForYouLayout";
+  bestForEyebrow: string;
+  bestForTitle: string;
+  bestForIntro: string;
+  bestForPoints: BestForPoint[];
+  bestForImage: {
+    node: { sourceUrl: string; altText: string };
+  } | null;
+  bestForButtonText: string;
+  bestForButtonLink: string;
+}
+
+// ========  News  ====================================================================
+
+export interface BlogArticle {
+  id: string;
+  title: string;
+  slug: string;
+  href: string;
+  excerpt: string;
+  category: string;
+  read_minutes: number;
+  cover_url: string;
+  published_on: string;
+  body: string;
+}
+
+export interface BlogCategory {
+  id: number;
+  name: string;
+  slug: string;
+  count: number;
+}
+
+export interface BlogListingResult {
+  articles: BlogArticle[];
+  total: number;
+  categories: BlogCategory[];
+}
+
+
 // ---- Union -------------------------------------------------------------
 
 /** Every possible block that can appear in a page's flexible content. */
@@ -341,7 +424,9 @@ export type PageBuilderBlock =
   | PartnersBlock
   | TextBlock
   | OurOfficeBlock
-  | TeamBlock;
+  | TeamBlock
+  | BusinessSetupBlock
+  | IsItRightForYouBlock;
 
 // ---- Posts (separate from the page builder blocks) ------------------------
 
@@ -405,4 +490,6 @@ export interface WPPage {
   latestPosts?: WPPostSummary[];
   language?: WPLanguage;
   translations?: WPTranslation[];
+  databaseId: number;
+  uri?: string;
 }

@@ -4,8 +4,10 @@ import { ShieldCheck } from "lucide-react";
 import Cf7Form from "./Cf7Form";
 import CustomLeadForm from "./CustomLeadForm";
 import type { ConsultationBlock } from "@/lib/wordpress/types";
+import type { ConsultationFormFields } from "@/lib/wordpress/types";
 
-export default function ConsultationForm({ block }: { block: ConsultationBlock }) {
+export default function ConsultationForm({ block }: { block: ConsultationFormFields }) {
+
   const {
     consultationEyebrow,
     consultationHeading,

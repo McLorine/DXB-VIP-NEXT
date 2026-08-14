@@ -105,7 +105,7 @@ export default function Navbar({ menus, themeSettings }: NavbarProps) {
     setOpen(null);
   }, [pathname]);
 
-  const hasDarkHero = ["/", "/about"].includes(pathname);
+  const hasDarkHero = true;
   const transparent = hasDarkHero && !scrolled;
 
   const linkColor = transparent

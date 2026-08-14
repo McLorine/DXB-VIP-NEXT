@@ -34,3 +34,121 @@ export const LATEST_POSTS_QUERY = /* GraphQL */ `
     }
   }
 `;
+
+export const POST_BY_URI_QUERY = /* GraphQL */ `
+  query PostByUri($uri: ID!) {
+    post(id: $uri, idType: URI) {
+      databaseId
+      title
+      slug
+      uri
+      date
+      excerpt
+      content
+
+      author {
+        node {
+          name
+        }
+      }
+
+      categories {
+        nodes {
+          databaseId
+          name
+          slug
+        }
+      }
+
+      featuredImage {
+        node {
+          sourceUrl
+          altText
+        }
+      }
+
+      language {
+        code
+        slug
+        name
+        locale
+      }
+
+      translations {
+        uri
+
+        language {
+          code
+          slug
+          name
+          locale
+        }
+      }
+    }
+  }
+`;
+
+export const POST_BY_SLUG_AND_LANGUAGE_QUERY = /* GraphQL */ `
+  query PostBySlugAndLanguage(
+    $slug: String!
+    $language: LanguageCodeFilterEnum!
+  ) {
+    posts(
+      first: 1
+      where: {
+        name: $slug
+        language: $language
+        status: PUBLISH
+      }
+    ) {
+      nodes {
+        databaseId
+        title
+        slug
+        uri
+        date
+        excerpt
+        content
+
+        author {
+          node {
+            name
+          }
+        }
+
+        categories {
+          nodes {
+            databaseId
+            name
+            slug
+          }
+        }
+
+        featuredImage {
+          node {
+            sourceUrl
+            altText
+          }
+        }
+
+        language {
+          code
+          slug
+          name
+          locale
+        }
+
+        translations {
+          uri
+
+          language {
+            code
+            slug
+            name
+            locale
+          }
+        }
+      }
+    }
+  }
+`;

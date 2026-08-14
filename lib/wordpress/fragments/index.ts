@@ -25,6 +25,9 @@ import { PARTNERS_FRAGMENT, PARTNERS_INLINE_SPREAD } from "./partners";
 import { TEXT_FRAGMENT, TEXT_INLINE_SPREAD } from "./text";
 import { OUR_OFFICE_FRAGMENT, OUR_OFFICE_INLINE_SPREAD } from "./our-office";
 import { TEAM_FRAGMENT, TEAM_INLINE_SPREAD } from "./team";
+import { BUSINESS_SETUP_FRAGMENT, BUSINESS_SETUP_INLINE_SPREAD } from "./business-setup";
+import { IS_IT_RIGHT_FOR_YOU_FRAGMENT, IS_IT_RIGHT_FOR_YOU_INLINE_SPREAD } from "./is-it-right-for-you";
+
 
 
 // ---- ⬇ ADD NEW IMPORTS ABOVE THIS LINE ⬇ -----------------------------------
@@ -46,6 +49,8 @@ export const ALL_FRAGMENTS = [
   TEXT_FRAGMENT,
   OUR_OFFICE_FRAGMENT,
   TEAM_FRAGMENT,
+  BUSINESS_SETUP_FRAGMENT,
+  IS_IT_RIGHT_FOR_YOU_FRAGMENT,
 
   // ⬅ add new *_FRAGMENT here
 ].join("\n");
@@ -67,6 +72,8 @@ export const ALL_INLINE_SPREADS = [
   TEXT_INLINE_SPREAD,
   OUR_OFFICE_INLINE_SPREAD,
   TEAM_INLINE_SPREAD,
+  BUSINESS_SETUP_INLINE_SPREAD,
+  IS_IT_RIGHT_FOR_YOU_INLINE_SPREAD,
   // ⬅ add new *_INLINE_SPREAD here
 ].join("\n");
 

@@ -192,7 +192,7 @@ export async function getMenuBySlug(
  * WordPress menu database ID: 12
  */
 export async function getMainNavigation() {
-  return getMenuById(12);
+  return getMenuById(2);
 }
 
 /**
@@ -201,7 +201,7 @@ export async function getMainNavigation() {
  * WordPress menu database ID: 13
  */
 export async function getFooterNavigation() {
-  return getMenuById(13);
+  return getMenuById(2);
 }
 
 /**
@@ -211,7 +211,7 @@ export async function getFooterNavigation() {
  * database ID of your bottom menu.
  */
 export async function getFooterBottomNavigation() {
-  return getMenuById(14);
+  return getMenuById(2);
 }
 
 /**

@@ -25,6 +25,8 @@ import Partners from "@/components/home/Partners";
 import Text from "@/components/common/Text";
 import OurOffice from "@/components/about/OurOffice";
 import TeamSlider from "@/components/about/TeamSlider";
+import ServiceIntroForm from "@/components/common/ServiceIntroForm";
+import SetupBestFor from "@/components/common/SetupBestFor";
 
 export const SECTION_REGISTRY: Record<string, ComponentType<any>> = {
   PageContentPageBuilderHeroLayout: Hero,
@@ -43,5 +45,7 @@ export const SECTION_REGISTRY: Record<string, ComponentType<any>> = {
   PageContentPageBuilderTextLayout: Text,
   PageContentPageBuilderOurOfficeLayout: OurOffice,
   PageContentPageBuilderTeamLayout: TeamSlider, 
+  PageContentPageBuilderBusinessSetupLayout: ServiceIntroForm,
+  PageContentPageBuilderIsItRightForYouLayout: SetupBestFor,
   // ⬅ add new "<Typename>": Component here
 };
