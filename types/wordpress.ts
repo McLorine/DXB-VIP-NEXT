@@ -3,16 +3,20 @@ export interface HeroStat {
   label: string;
 }
 
+type ACFLink = {
+  url: string;
+  title: string | null;
+  target: string | null;
+} | null;
+
 export interface HeroBlock {
   __typename: "PageContentPageBuilderHeroLayout";
   heroEyebrow: string;
   heroHeadingWhite: string;
   heroHeadingGold: string;
   heroDescription: string;
-  heroPrimaryButtonText: string;
-  heroPrimaryButtonLink: string;
-  heroSecondaryButtonText: string;
-  heroSecondaryButtonLink: string;
+  heroPrimaryButtonLink: ACFLink;
+  heroSecondaryButtonLink: ACFLink;
   heroBackgroundImage: {
     node: {
       sourceUrl: string;

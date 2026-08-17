@@ -195,7 +195,7 @@ export default function Navbar({ menusByLanguage, themeSettingsByLanguage }: Nav
 
           {/* Desktop actions */}
           <div className="hidden items-center gap-1.5 lg:flex">
-            <LanguageSwitcher />
+            <LanguageSwitcher dark={transparent} />
             {themeSettings?.headerCta?.url && (
               <GoldButton
                 to={themeSettings.headerCta.url}

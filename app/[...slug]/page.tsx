@@ -36,6 +36,8 @@ const NEWS_ARCHIVE_PAGE_IDS = new Set(
     .filter((id) => Number.isFinite(id))
 );
 
+const HERO_SECTION_TYPENAME = "PageContentPageBuilderHeroLayout";
+
 
 export async function generateStaticParams() {
   const slugs = await getAllContentSlugs();
@@ -130,6 +132,14 @@ export default async function DynamicRoute({
         page.language?.code?.toLowerCase() ??
         "en";
 
+      const pageBuilder = page.pageContent?.pageBuilder ?? [];
+      const heroSections = pageBuilder.filter(
+        (block) => block.__typename === HERO_SECTION_TYPENAME
+      );
+      const sectionsAfterArchive = pageBuilder.filter(
+        (block) => block.__typename !== HERO_SECTION_TYPENAME
+      );
+
       return (
         <>
           <RankMathSchema schemas={seo?.jsonLd ?? []} />
@@ -138,9 +148,19 @@ export default async function DynamicRoute({
             translations={page.translations}
           />
 
+          <SectionRenderer
+            blocks={heroSections}
+            latestPosts={page.latestPosts}
+          />
+
           <NewsArchive
             lang={lang}
             searchParams={searchParams}
+          />
+
+          <SectionRenderer
+            blocks={sectionsAfterArchive}
+            latestPosts={page.latestPosts}
           />
         </>
       );

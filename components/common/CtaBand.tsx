@@ -16,8 +16,8 @@ export default function CtaBand({
   ctaSecondaryButtonLink,
 }: CtaBandBlock) {
   return (
-    <section className="relative overflow-hidden bg-charcoal">
-      <div className="absolute inset-0 opacity-35">
+    <section className="relative overflow-hidden bg-sand">
+      <div className="absolute inset-0 opacity-[0.07]">
         {ctaBackgroundImage?.node && (
           <Image
             src={ctaBackgroundImage.node.sourceUrl}
@@ -26,20 +26,32 @@ export default function CtaBand({
           />
         )}
       </div>
-      <div className="absolute inset-0 bg-gradient-to-r from-charcoal via-charcoal/85 to-charcoal/40" />
-      <Reveal className="relative mx-auto max-w-7xl px-6 lg:px-10 py-20 md:py-28">
-        <span className="eyebrow">{ctaEyebrow}</span>
-        <h2 className="mt-4 max-w-2xl text-[1.9rem] md:text-[2.8rem] leading-[1.1] text-white">
-          {ctaHeading}
-        </h2>
-        <p className="mt-5 max-w-xl text-white/70">{ctaDescription}</p>
-        <div className="mt-9 flex flex-wrap gap-4">
-          <GoldButton to={ctaPrimaryButtonLink}>{ctaPrimaryButtonText}</GoldButton>
-          <GoldButton href={ctaSecondaryButtonLink} variant="light" target="_blank" rel="noreferrer">
-            {ctaSecondaryButtonText}
-          </GoldButton>
-        </div>
-      </Reveal>
+      <div className="absolute inset-0 bg-gradient-to-r from-sand via-sand/85 to-sand/50" />
+
+      <div className="relative mx-auto max-w-7xl px-6 py-24 md:py-32 lg:px-10">
+        <Reveal className="mx-auto max-w-3xl text-center">
+          <div className="flex items-center justify-center gap-3">
+            <span className="h-px w-10 bg-gold/50" />
+            <span className="eyebrow">{ctaEyebrow}</span>
+            <span className="h-px w-10 bg-gold/50" />
+          </div>
+          <h2 className="mt-6 text-[2rem] leading-[1.08] text-charcoal md:text-[3rem]">
+            {ctaHeading}
+          </h2>
+          <p className="mt-5 text-slatewarm">{ctaDescription}</p>
+          <div className="mt-9 flex flex-wrap justify-center gap-4">
+            <GoldButton to={ctaPrimaryButtonLink}>{ctaPrimaryButtonText}</GoldButton>
+            <GoldButton
+              href={ctaSecondaryButtonLink}
+              variant="outline"
+              target="_blank"
+              rel="noreferrer"
+            >
+              {ctaSecondaryButtonText}
+            </GoldButton>
+          </div>
+        </Reveal>
+      </div>
     </section>
   );
 }

@@ -12,9 +12,7 @@ export default function Hero(props: HeroBlock) {
     heroHeadingWhite,
     heroHeadingGold,
     heroDescription,
-    heroPrimaryButtonText,
     heroPrimaryButtonLink,
-    heroSecondaryButtonText,
     heroSecondaryButtonLink,
     heroBackgroundImage,
     heroStatistics,
@@ -48,22 +46,34 @@ export default function Hero(props: HeroBlock) {
             {heroDescription?.trim()}
           </p>
           <div className="mt-9 flex flex-wrap items-center gap-4">
-            {heroPrimaryButtonText && heroPrimaryButtonLink && (
+            {heroPrimaryButtonLink?.url && heroPrimaryButtonLink.title && (
               <GoldButton
-                to={heroPrimaryButtonLink}
+                to={heroPrimaryButtonLink.url}
+                target={heroPrimaryButtonLink.target || undefined}
+                rel={
+                  heroPrimaryButtonLink.target === "_blank"
+                    ? "noopener noreferrer"
+                    : undefined
+                }
                 className="bg-gold-deep text-white hover:bg-gold hover:shadow-[0_18px_40px_-18px_rgba(197,160,89,0.8)]"
               >
-                {heroPrimaryButtonText}
+                {heroPrimaryButtonLink.title}
               </GoldButton>
             )}
 
-            {heroSecondaryButtonText && heroSecondaryButtonLink && (
+            {heroSecondaryButtonLink?.url && heroSecondaryButtonLink.title && (
               <GoldButton
-                to={heroSecondaryButtonLink}
+                to={heroSecondaryButtonLink.url}
+                target={heroSecondaryButtonLink.target || undefined}
+                rel={
+                  heroSecondaryButtonLink.target === "_blank"
+                    ? "noopener noreferrer"
+                    : undefined
+                }
                 variant="outline"
                 className="text-white hover:bg-white/10 hover:text-white"
               >
-                {heroSecondaryButtonText}
+                {heroSecondaryButtonLink.title}
               </GoldButton>
             )}
           </div>

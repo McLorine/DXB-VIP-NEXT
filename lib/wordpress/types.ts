@@ -33,10 +33,8 @@ export interface HeroBlock {
   heroHeadingWhite: string;
   heroHeadingGold: string;
   heroDescription: string;
-  heroPrimaryButtonText: string;
-  heroPrimaryButtonLink: string;
-  heroSecondaryButtonText: string;
-  heroSecondaryButtonLink: string;
+  heroPrimaryButtonLink: ACFLink;
+  heroSecondaryButtonLink: ACFLink;
   heroBackgroundImage: ACFImage;
   heroStatistics: HeroStat[] | null;
 }

@@ -12,10 +12,16 @@ export const HERO_FRAGMENT = /* GraphQL */ `
     heroHeadingWhite
     heroHeadingGold
     heroDescription
-    heroPrimaryButtonText
-    heroPrimaryButtonLink
-    heroSecondaryButtonText
-    heroSecondaryButtonLink
+    heroPrimaryButtonLink {
+      url
+      title
+      target
+    }
+    heroSecondaryButtonLink {
+      url
+      title
+      target
+    }
     heroBackgroundImage {
       node { sourceUrl altText }
     }
