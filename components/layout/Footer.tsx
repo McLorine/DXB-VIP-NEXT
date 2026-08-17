@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   Phone,
   Mail,
@@ -23,16 +26,31 @@ import type { ThemeSettings } from "@/lib/wordpress/themeSettings";
 import Logo from "@/components/common/Logo";
 
 type FooterProps = {
-  menuItems: WordPressMenuItem[];
-  bottomMenuItems: WordPressMenuItem[];
-  themeSettings?: ThemeSettings;
+  menusByLanguage: Record<string, WordPressMenuItem[]>;
+  bottomMenusByLanguage: Record<string, WordPressMenuItem[]>;
+  themeSettingsByLanguage: Record<string, ThemeSettings>;
 };
 
+function getLanguageFromPath(pathname: string) {
+  const firstSegment = pathname.split("/").filter(Boolean)[0]?.toLowerCase();
+  if (firstSegment === "ru" || firstSegment === "fr" || firstSegment === "en") {
+    return firstSegment;
+  }
+
+  return "en";
+}
+
 export default function Footer({
-  menuItems,
-  bottomMenuItems = [],
-  themeSettings,
+  menusByLanguage,
+  bottomMenusByLanguage,
+  themeSettingsByLanguage,
 }: FooterProps) {
+  const pathname = usePathname();
+  const activeLanguage = getLanguageFromPath(pathname);
+  const menuItems = menusByLanguage[activeLanguage] ?? menusByLanguage.en ?? [];
+  const bottomMenuItems = bottomMenusByLanguage[activeLanguage] ?? bottomMenusByLanguage.en ?? [];
+  const themeSettings = themeSettingsByLanguage[activeLanguage] ?? themeSettingsByLanguage.en;
+
   const topLevelItems = menuItems.filter(
     (item) => !item.parentId
   );

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { getContentByUri } from "@/lib/wordpress/getNodeByUri";
@@ -7,6 +8,8 @@ import SectionRenderer from "@/components/sections/SectionRenderer";
 import BlogPostView from "@/components/common/BlogPostView";
 import SyncTranslations from "@/components/i18n/SyncTranslations";
 import NewsArchive from "@/components/news/NewsArchive";
+import RankMathSchema from "@/components/common/RankMathSchema";
+import { fallbackMetadata, getRankMathSeo } from "@/lib/wordpress/seo";
 
 export const dynamicParams = true;
 
@@ -55,6 +58,26 @@ interface DynamicRouteProps {
   }>;
 }
 
+export async function generateMetadata({ params }: DynamicRouteProps): Promise<Metadata> {
+  const { slug } = await params;
+  const path = `/${slug.join("/")}/`;
+  const [seo, result] = await Promise.all([
+    getRankMathSeo(path),
+    getContentByUri(slug.join("/")),
+  ]);
+
+  if (seo) return seo.metadata;
+  if (!result) return {};
+
+  const content = result.type === "page" ? result.page : result.post;
+  return fallbackMetadata(
+    path,
+    content.title,
+    result.type === "post" ? result.post.excerpt : undefined,
+    result.type === "post" ? result.post.coverUrl : undefined
+  );
+}
+
 
 export default async function DynamicRoute({
   params,
@@ -64,7 +87,10 @@ export default async function DynamicRoute({
 
   const uri = slug.join("/");
 
-  const result = await getContentByUri(uri);
+  const [result, seo] = await Promise.all([
+    getContentByUri(uri),
+    getRankMathSeo(`/${uri}/`),
+  ]);
 
   if (!result) {
     return notFound();
@@ -106,6 +132,7 @@ export default async function DynamicRoute({
 
       return (
         <>
+          <RankMathSchema schemas={seo?.jsonLd ?? []} />
           <SyncTranslations
             currentLanguage={page.language}
             translations={page.translations}
@@ -126,6 +153,7 @@ export default async function DynamicRoute({
 
     return (
       <>
+        <RankMathSchema schemas={seo?.jsonLd ?? []} />
         <SyncTranslations
           currentLanguage={page.language}
           translations={page.translations}
@@ -146,6 +174,7 @@ export default async function DynamicRoute({
 
   return (
     <>
+      <RankMathSchema schemas={seo?.jsonLd ?? []} />
       <SyncTranslations
         currentLanguage={result.post.language}
         translations={result.post.translations}

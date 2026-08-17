@@ -1,5 +1,15 @@
 // ============================================================================
 // ACF "Theme Settings" options page — global settings (logo, CTA, socials…).
+//
+// Three fields are now stored per-language in ACF (en / fr / ru):
+//   - Header CTA Button Link  -> header_cta_button_link_en / _fr / _ru
+//   - Footer Description      -> footer_description_en / _fr / _ru
+//   - Copyright Text          -> copyright_text_en / _fr / _ru
+//
+// The GraphQL query below aliases the correct language-specific field back
+// onto the original, language-agnostic key (heroCtaButtonLink,
+// footerDescription, copyrightText), so every other type/consumer in the
+// codebase is untouched — only the query changes based on `locale`.
 // ============================================================================
 
 import { fetchGraphQL } from "./client";
@@ -7,6 +17,11 @@ import { fetchGraphQL } from "./client";
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
+
+export type Locale = "en" | "fr" | "ru";
+
+export const SUPPORTED_LOCALES: Locale[] = ["en", "fr", "ru"];
+export const DEFAULT_LOCALE: Locale = "en";
 
 export interface ThemeSettingsIcon {
   sourceUrl: string;
@@ -23,7 +38,7 @@ export interface ThemeSettings {
   /** Logo image URL (typically SVG) */
   logoUrl: string | null;
 
-  /** Header CTA button */
+  /** Header CTA button — resolved for the requested locale */
   headerCta: ThemeSettingsCta | null;
 
   /** Contact numbers */
@@ -35,7 +50,7 @@ export interface ThemeSettings {
   phoneIcon: ThemeSettingsIcon | null;
   whatsappIcon: ThemeSettingsIcon | null;
 
-  /** Footer fields */
+  /** Footer fields — resolved for the requested locale */
   footerDescription: string | null;
   copyrightText: string | null;
   footerAddress: string | null;
@@ -53,58 +68,78 @@ export interface ThemeSettings {
 }
 
 // ---------------------------------------------------------------------------
-// GraphQL query
+// Locale helpers
 // ---------------------------------------------------------------------------
 
-const THEME_SETTINGS_QUERY = `
-  query GetThemeSettings {
-    themeSettings {
-      themeSettingsFields {
-        themeLogo {
-          node {
-            sourceUrl
-            altText
+function resolveLocale(locale?: string | null): Locale {
+  if (locale && (SUPPORTED_LOCALES as string[]).includes(locale)) {
+    return locale as Locale;
+  }
+  return DEFAULT_LOCALE;
+}
+
+/** Capitalized suffix used to build the ACF/WPGraphQL field names, e.g. "En" | "Fr" | "Ru" */
+function localeSuffix(locale: Locale): string {
+  return locale.charAt(0).toUpperCase() + locale.slice(1);
+}
+
+// ---------------------------------------------------------------------------
+// GraphQL query (built dynamically so we only ask for the fields we need)
+// ---------------------------------------------------------------------------
+
+function buildThemeSettingsQuery(locale: Locale): string {
+  const suffix = localeSuffix(locale); // "En" | "Fr" | "Ru"
+
+  return `
+    query GetThemeSettings {
+      themeSettings {
+        themeSettingsFields {
+          themeLogo {
+            node {
+              sourceUrl
+              altText
+            }
           }
-        }
-        heroCtaButtonLink {
-          url
-          title
-          target
-        }
-        phoneNumber
-        whatsappNumber
-        emailAddress
-        phoneIcon {
-          node {
-            sourceUrl
-            altText
+          heroCtaButtonLink: heroCtaButtonLink${suffix} {
+            url
+            title
+            target
           }
-        }
-        whatsappIcon {
-          node {
-            sourceUrl
-            altText
+          phoneNumber
+          whatsappNumber
+          emailAddress
+          phoneIcon {
+            node {
+              sourceUrl
+              altText
+            }
           }
-        }
-        footerDescription
-        copyrightText
-        footerAddress
-        footerWorkingHours
-        socialFacebook
-        socialInstagram
-        socialYoutube
-        socialTiktok
-        socialX
-        socialLinkedin
-        socialPinterest
-        customSocials {
-          name
-          url
+          whatsappIcon {
+            node {
+              sourceUrl
+              altText
+            }
+          }
+          footerDescription: footerDescription${suffix}
+          copyrightText: copyrightText${suffix}
+          footerAddress
+          footerWorkingHours
+          socialFacebook
+          socialInstagram
+          socialYoutube
+          socialTiktok
+          socialX
+          socialLinkedin
+          socialPinterest
+          customSocials {
+            name
+            url
+          }
         }
       }
     }
-  }
-`;
+  `;
+}
 
 // ---------------------------------------------------------------------------
 // Raw response shape (mirrors WPGraphQL's camelCase output)
@@ -114,6 +149,8 @@ type RawThemeSettings = {
   themeSettings: {
     themeSettingsFields: {
       themeLogo: { node: { sourceUrl: string; altText: string } } | null;
+      // Aliased in the query above, so the shape at this key is always the
+      // language-agnostic one regardless of which locale field was queried.
       heroCtaButtonLink: { url: string; title: string | null; target: string | null } | null;
       phoneNumber: string | null;
       whatsappNumber: string | null;
@@ -140,11 +177,22 @@ type RawThemeSettings = {
 // Fetcher
 // ---------------------------------------------------------------------------
 
-export async function getThemeSettings(): Promise<ThemeSettings> {
+/**
+ * Fetch Theme Settings, resolving the per-language static-text fields
+ * (Header CTA, Footer Description, Copyright Text) for the given locale.
+ * Falls back to `DEFAULT_LOCALE` ("en") if an unsupported locale is passed.
+ */
+export async function getThemeSettings(
+  locale: string | Locale = DEFAULT_LOCALE,
+): Promise<ThemeSettings> {
+  const resolvedLocale = resolveLocale(locale);
+
   const data = await fetchGraphQL<RawThemeSettings>(
-    THEME_SETTINGS_QUERY,
+    buildThemeSettingsQuery(resolvedLocale),
     {},
-    ["theme-settings"],
+    // Cache tag is locale-scoped so switching languages doesn't serve a
+    // stale, wrong-language response from cache.
+    [`theme-settings-${resolvedLocale}`],
   );
 
   const ts = data.themeSettings.themeSettingsFields;

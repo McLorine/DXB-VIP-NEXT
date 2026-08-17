@@ -24,6 +24,7 @@ interface RawPostNode {
 }
 
 interface RawPage {
+  databaseId: number;
   title: string;
   language: WPLanguage | null;
   translations: WPTranslation[] | null;
@@ -91,6 +92,7 @@ export async function getPageBySlug(slug: string): Promise<WPPage | null> {
   }
 
   return {
+    databaseId: data.page.databaseId,
     title: data.page.title,
     pageContent: { pageBuilder: blocks },
     latestPosts,

@@ -2,15 +2,29 @@ import Navbar from "./Navbar";
 
 import { getMainNavigation } from "@/lib/wordpress/menu";
 import { buildMenus } from "@/lib/wordpress/menuMapper";
-import { getThemeSettings } from "@/lib/wordpress/themeSettings";
+import { getThemeSettings, type ThemeSettings } from "@/lib/wordpress/themeSettings";
 
 export default async function NavbarWrapper() {
-  const [items, themeSettings] = await Promise.all([
-    getMainNavigation(),
-    getThemeSettings(),
+  const [enItems, ruItems, frItems, enTheme, ruTheme, frTheme] = await Promise.all([
+    getMainNavigation("en"),
+    getMainNavigation("ru"),
+    getMainNavigation("fr"),
+    getThemeSettings("en"),
+    getThemeSettings("ru"),
+    getThemeSettings("fr"),
   ]);
 
-  const menus = buildMenus(items);
+  const menusByLanguage = {
+    en: buildMenus(enItems),
+    ru: buildMenus(ruItems),
+    fr: buildMenus(frItems),
+  };
 
-  return <Navbar menus={menus} themeSettings={themeSettings} />;
+  const themeSettingsByLanguage: Record<string, ThemeSettings> = {
+    en: enTheme,
+    ru: ruTheme,
+    fr: frTheme,
+  };
+
+  return <Navbar menusByLanguage={menusByLanguage} themeSettingsByLanguage={themeSettingsByLanguage} />;
 }

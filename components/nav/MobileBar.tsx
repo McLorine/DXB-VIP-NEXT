@@ -1,16 +1,30 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Phone, CalendarCheck } from "lucide-react";
 
 import WhatsAppIcon from "@/components/common/WhatsAppIcon";
 import type { ThemeSettings } from "@/lib/wordpress/themeSettings";
 
+function getLanguageFromPath(pathname: string) {
+  const firstSegment = pathname.split("/").filter(Boolean)[0]?.toLowerCase();
+  if (firstSegment === "ru" || firstSegment === "fr" || firstSegment === "en") {
+    return firstSegment;
+  }
+
+  return "en";
+}
+
 type MobileBarProps = {
-  themeSettings?: ThemeSettings;
+  themeSettingsByLanguage: Record<string, ThemeSettings>;
 };
 
-export default function MobileBar({ themeSettings }: MobileBarProps) {
-  // If neither phone nor WhatsApp is configured, and no book action is desired,
-  // we can render only the book link, or check if we want to show it.
+export default function MobileBar({ themeSettingsByLanguage }: MobileBarProps) {
+  const pathname = usePathname();
+  const activeLanguage = getLanguageFromPath(pathname);
+  const themeSettings = themeSettingsByLanguage[activeLanguage] ?? themeSettingsByLanguage.en;
+  
   const hasPhone = !!themeSettings?.phoneNumber;
   const hasWhatsapp = !!themeSettings?.whatsappNumber;
 

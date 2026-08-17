@@ -176,7 +176,12 @@ export interface BlogPreviewBlock {
 
 // ---- Consultation Form -----------------------------------------------------
 
-export type ConsultationFieldType = "text" | "email" | "tel" | "textarea" | "select";
+export type ConsultationFieldType =
+  | "text"
+  | "email"
+  | "tel"
+  | "textarea"
+  | "select";
 
 export interface ConsultationCustomField {
   fieldLabel: string;
@@ -404,6 +409,131 @@ export interface BlogListingResult {
   categories: BlogCategory[];
 }
 
+// ---- Contact Form + Info ---------------------------------------------------
+
+export type ContactFormFieldType =
+  | "text"
+  | "email"
+  | "tel"
+  | "textarea"
+  | "select";
+
+export interface ContactFormCustomField {
+  fieldLabel: string;
+  fieldName: string;
+  fieldType: ContactFormFieldType;
+  fieldRequired: boolean;
+  fieldOptions: { optionLabel: string }[] | null;
+}
+
+export type ContactInfoIcon =
+  | "phone"
+  | "whatsapp"
+  | "email"
+  | "location"
+  | "clock"
+  | "globe";
+
+export interface ContactFormInfoItem {
+  icon: ContactInfoIcon;
+  label: string;
+  value: string;
+  link: string;
+}
+
+export interface ContactFormInfoBlock {
+  __typename: "PageContentPageBuilderContactFormInfoLayout";
+  contactFormEyebrow: string;
+  contactFormHeading: string;
+  contactFormDescription: string;
+  contactFormSourcePage: string;
+  contactFormFormType: "cf7" | "custom";
+  contactFormCf7FormId: string | null;
+  contactFormCustomFields: ContactFormCustomField[];
+  contactFormSubmitButtonText: string;
+  contactFormShowPrivacyNote: boolean;
+  contactFormPrivacyText: string;
+  contactFormInfoItems: ContactFormInfoItem[];
+}
+
+// ---- Map Section ------------------------------------------------------------
+
+/**
+ * ACF google_map field shape as exposed by WPGraphQL for ACF. VERIFY via
+ * introspection after import — object-type ACF fields (like taxonomy/
+ * post_object earlier) sometimes resolve differently than expected and
+ * need a sub-selection adjustment. Query:
+ *   { __type(name: "PageContentPageBuilderMapSectionLayout") { fields { name type { name kind } } } }
+ */
+export interface MapLocation {
+  streetAddress: string | null;
+  city: string | null;
+  state: string | null;
+  postCode: string | null;
+  country: string | null;
+  countryShort: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  zoom: number | null;
+  placeId: string | null;
+}
+
+export interface MapSectionBlock {
+  __typename: "PageContentPageBuilderMapSectionLayout";
+  mapEyebrow: string;
+  mapTitle: string;
+  mapAddress: string;
+  mapLocation: MapLocation | null;
+  mapLinkText: string;
+}
+
+
+export type EstimatorOptionIcon =
+  | "none" | "store" | "briefcase" | "shopping_cart" | "factory"
+  | "building" | "landmark" | "ship" | "circle";
+
+export interface EstimatorOption {
+  optionId: string;
+  optionIcon: EstimatorOptionIcon | EstimatorOptionIcon[]; // WPGraphQL returns array
+  optionLabel: string;
+  optionDescription: string;
+  optionBadge: string;
+  optionDefaultOn: boolean;
+}
+
+export type EstimatorStepType = "single_select_cards" | "multi_select_toggles" | "contact_form";
+
+export interface EstimatorStep {
+  stepKey: string;
+  stepType: EstimatorStepType | EstimatorStepType[]; // WPGraphQL returns array
+  stepTitle: string;
+  stepSubtitle: string;
+  stepBodyText: string;
+  stepRequired: boolean;
+  stepOptions: EstimatorOption[];
+}
+
+export interface CostEstimatorBlock {
+  __typename: "PageContentPageBuilderCostEstimatorLayout";
+  estimatorSectionEyebrow: string;
+  estimatorSectionHeading: string;
+  estimatorSteps: EstimatorStep[];
+  estimatorContinueText: string;
+  estimatorBackText: string;
+  estimatorSubmitText: string;
+  estimatorSubmittingText: string;
+  estimatorErrorText: string;
+  estimatorSummaryTitle: string;
+  estimatorNextStepsTitle: string;
+  estimatorNextStepsText: string;
+  estimatorSuccessHeading: string;
+  estimatorSuccessMessage: string;
+  estimatorSuccessCallText: string;
+  estimatorSuccessWhatsappText: string;
+  estimatorSourcePage: string;
+  estimatorPhoneHref: string;
+  estimatorWhatsappHref: string;
+}
 
 // ---- Union -------------------------------------------------------------
 
@@ -426,10 +556,13 @@ export type PageBuilderBlock =
   | OurOfficeBlock
   | TeamBlock
   | BusinessSetupBlock
-  | IsItRightForYouBlock;
+  | IsItRightForYouBlock
+  | ContactFormInfoBlock
+  | MapSectionBlock
+  | CostEstimatorBlock;
+
 
 // ---- Posts (separate from the page builder blocks) ------------------------
-
 
 export interface WPPost {
   id: string;

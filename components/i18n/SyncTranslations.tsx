@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import type { WPLanguage, WPTranslation } from "@/lib/wordpress/types";
+import { toHtmlLang } from "@/lib/i18n/htmlLang";
 
 export default function SyncTranslations({
   currentLanguage,
@@ -14,6 +15,7 @@ export default function SyncTranslations({
 
   useEffect(() => {
     setTranslations(currentLanguage ?? null, translations ?? []);
+    document.documentElement.lang = toHtmlLang(currentLanguage);
     return () => setTranslations(null, []);
   }, [currentLanguage, translations, setTranslations]);
 

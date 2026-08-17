@@ -31,9 +31,18 @@ type Menu = {
 };
 
 type NavbarProps = {
-  menus: Record<string, Menu>;
-  themeSettings?: ThemeSettings;
+  menusByLanguage: Record<string, Record<string, Menu>>;
+  themeSettingsByLanguage: Record<string, ThemeSettings>;
 };
+
+function getLanguageFromPath(pathname: string) {
+  const firstSegment = pathname.split("/").filter(Boolean)[0]?.toLowerCase();
+  if (firstSegment === "ru" || firstSegment === "fr" || firstSegment === "en") {
+    return firstSegment;
+  }
+
+  return "en";
+}
 
 function NavbarIcon({
   src,
@@ -79,12 +88,15 @@ function NavbarIcon({
   return <>{fallback}</>;
 }
 
-export default function Navbar({ menus, themeSettings }: NavbarProps) {
+export default function Navbar({ menusByLanguage, themeSettingsByLanguage }: NavbarProps) {
   const [open, setOpen] = useState<string | null>(null);
   const [mobile, setMobile] = useState<boolean>(false);
   const [scrolled, setScrolled] = useState(false);
 
   const pathname = usePathname();
+  const activeLanguage = getLanguageFromPath(pathname);
+  const menus = menusByLanguage[activeLanguage] ?? menusByLanguage.en ?? {};
+  const themeSettings = themeSettingsByLanguage[activeLanguage] ?? themeSettingsByLanguage.en;
 
   useEffect(() => {
     const onScroll = () => {

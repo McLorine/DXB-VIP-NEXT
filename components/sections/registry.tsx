@@ -27,6 +27,9 @@ import OurOffice from "@/components/about/OurOffice";
 import TeamSlider from "@/components/about/TeamSlider";
 import ServiceIntroForm from "@/components/common/ServiceIntroForm";
 import SetupBestFor from "@/components/common/SetupBestFor";
+import ContactFormInfo from "@/components/forms/ContactFormInfo";
+import MapSection from "@/components/common/MapSection";
+import CostEstimator from "@/components/common/CostEstimator";
 
 export const SECTION_REGISTRY: Record<string, ComponentType<any>> = {
   PageContentPageBuilderHeroLayout: Hero,
@@ -44,8 +47,12 @@ export const SECTION_REGISTRY: Record<string, ComponentType<any>> = {
   PageContentPageBuilderPartnersLayout: Partners,
   PageContentPageBuilderTextLayout: Text,
   PageContentPageBuilderOurOfficeLayout: OurOffice,
-  PageContentPageBuilderTeamLayout: TeamSlider, 
+  PageContentPageBuilderTeamLayout: TeamSlider,
   PageContentPageBuilderBusinessSetupLayout: ServiceIntroForm,
   PageContentPageBuilderIsItRightForYouLayout: SetupBestFor,
+  PageContentPageBuilderContactFormInfoLayout: ContactFormInfo,
+  PageContentPageBuilderMapSectionLayout: MapSection,
+  PageContentPageBuilderCostEstimatorLayout: CostEstimator,
+
   // ⬅ add new "<Typename>": Component here
 };

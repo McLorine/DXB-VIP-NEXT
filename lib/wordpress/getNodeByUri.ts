@@ -114,7 +114,14 @@ function isUnresolvedUriBug(err: unknown): boolean {
   return err.errors.some((e: any) => {
     const path = Array.isArray(e.path) ? e.path.join(".") : "";
     const debugMsg: string = e.extensions?.debugMessage ?? "";
-    return path.includes("nodeByUri") && debugMsg.includes("UniformResourceIdentifiable");
+    const message: string = e.message ?? "";
+
+    // WPGraphQL hides debugMessage when GRAPHQL_DEBUG is disabled. The query
+    // has only one root field, so an error whose path points at nodeByUri is
+    // enough to safely activate the page/front-page fallback.
+    return path.includes("nodeByUri") ||
+      debugMsg.includes("UniformResourceIdentifiable") ||
+      message.includes("UniformResourceIdentifiable");
   });
 }
 
@@ -384,6 +391,22 @@ export async function getContentByUri(
     path === "/"
       ? "/"
       : `/${path.replace(/^\/|\/$/g, "")}/`;
+
+  /*
+   * A translated Polylang homepage has a language-only public URI such as
+   * /ru/, while its stored page URI/slug is different. nodeByUri is known to
+   * crash for these values, so resolve this unambiguous case before touching
+   * either the post resolver or nodeByUri. This must not depend on
+   * GRAPHQL_DEBUG exposing the underlying PHP exception.
+   */
+  const translatedFrontPage = await getFrontPageForUri(uri);
+
+  if (translatedFrontPage) {
+    return {
+      type: "page",
+      page: await buildPageResult(translatedFrontPage),
+    };
+  }
 
   /*
    * ==========================================================
